@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -17,6 +18,22 @@ func HelloHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func PostArticleHandler(w http.ResponseWriter, req *http.Request) {
+	// var reqBodybuffer []byte
+	length, err := strconv.Atoi(req.Header.Get("Content-Length"))
+	if err != nil {
+		http.Error(w, "cannot get content length\n", http.StatusBadRequest)
+		return
+	}
+
+	reqBodybuffer := make([]byte, length)
+
+	if _, err := req.Body.Read(reqBodybuffer); !errors.Is(err, io.EOF) {
+		// もしも errors.Is 関数の結果が false だった場合エラーは io.EOF ではない 何か別の異常ということなので、その場合にはサーバー内で異常が起きたことを示す 500 番エラー を返すようにしています。
+		http.Error(w, "fail to get request body\n", http.StatusBadRequest)
+		return
+	}
+	defer req.Body.Close()
+
 	// モックを返す
 	article := models.Article1
 	jsonData, err := json.Marshal(article)

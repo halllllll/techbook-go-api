@@ -1,2 +1,4 @@
 github.com/gorilla/mux v1.8.1 h1:TuBL49tXwgrFYWhqrNgrUNEY92u81SPhu7sTdzQEiWY=
 github.com/gorilla/mux v1.8.1/go.mod h1:AKf9I4AEqPTmMytcMc0KkNouC66V3BtZ4qD5fmWSiMQ=
+github.com/halllllll/techbook-go-api v0.0.0-20231127224928-1ccb6a49b553 h1:3jYj58OxHChaajWV1BI82KysA8QDF1quFgT00eqLngs=
+github.com/halllllll/techbook-go-api v0.0.0-20231127224928-1ccb6a49b553/go.mod h1:aQIhJX4I5xjsJGmfPduWrd14Y62iU7QjYd46xuFtdsM=

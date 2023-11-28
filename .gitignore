@@ -1,6 +1,6 @@
 ## Env
 .tool-versions
-
+.env
 
 ## vscode
 .vscode/*

@@ -21,44 +21,47 @@ func main() {
 
 	defer db.Close()
 
-	articleID := 1
+	// articleID := 1
 
-	const sqlStr = `
-		SELECT * FROM articles WHERE article_id = ?;
-	`
-	row := db.QueryRow(sqlStr, articleID)
-	if err := row.Err(); err != nil {
-		fmt.Println(err)
-		return
-	}
-	var article models.Article
-	var createdTime sql.NullTime
+	// const sqlStr = `
+	// 	SELECT * FROM articles WHERE article_id = ?;
+	// `
+	// row := db.QueryRow(sqlStr, articleID)
+	// if err := row.Err(); err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
+	// var article models.Article
+	// var createdTime sql.NullTime
 
-	// articleArray := make([]models.Article, 0)
-	// for rows.Next() {
-	// 	var article models.Article
-	// 	var createdTime sql.NullTime
-
-	// 	err := rows.Scan(&article.ID, &article.Title, &article.Contents, &article.UserName, &article.NiceNum, &createdTime)
-
-	// 	if createdTime.Valid {
-	// 		article.CreatedAt = createdTime.Time
-	// 	}
-	// 	if err != nil {
-	// 		fmt.Println(err)
-	// 	} else {
-	// 		articleArray = append(articleArray, article)
-	// 	}
+	// err = row.Scan(&article.ID, &article.Title, &article.Contents, &article.UserName, &article.NiceNum, &createdTime)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
+	// if createdTime.Valid {
+	// 	article.CreatedAt = createdTime.Time
 	// }
 
-	err = row.Scan(&article.ID, &article.Title, &article.Contents, &article.UserName, &article.NiceNum, &createdTime)
+	article := models.Article{
+		Title:    "insert test ONE",
+		Contents: "Can I Insert Data Correctly?",
+		UserName: "saki-ikas",
+	}
+	const sqlStr = `
+		INSERT INTO articles (
+			title, contents, username, nice, created_at
+		) VALUES (
+			?, ?, ?, 0, now()
+		);
+	`
+
+	result, err := db.Exec(sqlStr, article.Title, article.Contents, article.UserName)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	if createdTime.Valid {
-		article.CreatedAt = createdTime.Time
-	}
 
-	fmt.Printf("%+v\n", article)
+	fmt.Println(result.LastInsertId())
+	fmt.Println(result.RowsAffected())
 }

@@ -39,8 +39,19 @@ func TestMain(m *testing.M) {
 }
 
 func setupTestData() error {
-	cmd := exec.Command("mysql", "-h", "127.0.0.1", "-u", "docker", "sampledb", "--password=docker", "-e", "source ./testdata/setupDB.sql")
-	err := cmd.Run()
+	// cmd := exec.Command("mysql", "-h", "127.0.0.1", "-u", "docker", "sampledb", "--password=docker", "-e", "source ./testdata/setupDB.sql") ローカルのmysql経由で実行（本書通り）
+
+	// 以下,自分の環境用に改変
+	// dockerのmysqlコンテナ経由で実行(リダイレクトはシェルの機能でありexec.Commandでは使えない)
+	setupSql, err := os.Open("./testdata/setupDB.sql")
+	if err != nil {
+		return err
+	}
+	cmd := exec.Command("docker", "exec", "-i", "db-for-go", "mysql", "-udocker", "-pdocker", "sampledb")
+	// リダイレクト
+	cmd.Stdin = setupSql
+
+	err = cmd.Run()
 	if err != nil {
 		return err
 	}
@@ -48,8 +59,20 @@ func setupTestData() error {
 }
 
 func cleanupDB() error {
-	cmd := exec.Command("mysql", "-h", "127.0.0.1", "-u", "docker", "sampledb", "--password=docker", "-e", "source ./testdata/cleanupDB.sql")
-	err := cmd.Run()
+
+	// cmd := exec.Command("mysql", "-h", "127.0.0.1", "-u", "docker", "sampledb", "--password=docker", "-e", "source ./testdata/cleanupDB.sql") ローカルのmysql経由で実行（本書通り）
+
+	// 以下,自分の環境用に改変
+	// dockerのmysqlコンテナ経由で実行(リダイレクトはシェルの機能でありexec.Commandでは使えない)
+	cleanupSql, err := os.Open("./testdata/cleanupDB.sql")
+	if err != nil {
+		return err
+	}
+	cmd := exec.Command("docker", "exec", "-i", "db-for-go", "mysql", "-udocker", "-pdocker", "sampledb")
+	// リダイレクト
+	cmd.Stdin = cleanupSql
+
+	err = cmd.Run()
 	if err != nil {
 		return err
 	}
@@ -57,19 +80,10 @@ func cleanupDB() error {
 }
 
 func setup() error {
-	// dbUser := "docker"
-	// dbPassword := "docker"
-	// dbDatabase := "sampledb"
-	// dbConn := fmt.Sprintf("%s:%s@tcp(127.0.0.1:3306)/%s?parseTime=true", dbUser, dbPassword, dbDatabase)
-	// var err error
-	// testDB, err = sql.Open("mysql", dbConn)
-	// if err != nil {
-	// 	return err
-	// }
-
 	if err := connectDB(); err != nil {
 		return err
 	}
+
 	if err := cleanupDB(); err != nil {
 		fmt.Println("cleanup", err)
 		return err

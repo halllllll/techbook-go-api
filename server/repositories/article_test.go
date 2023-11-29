@@ -75,14 +75,14 @@ func TestInsertArticle(t *testing.T) {
 		UserName: "sasaki",
 	}
 
-	expectedArticluNum := 10
+	expectedArticleNum := 3
 	newArticle, err := repositories.InsertArticle(testDB, article)
 	if err != nil {
 		t.Error(err)
 	}
 
-	if newArticle.ID != expectedArticluNum {
-		t.Errorf("new article id is expected %d but got %d\n", expectedArticluNum, newArticle.ID)
+	if newArticle.ID != expectedArticleNum {
+		t.Errorf("new article id is expected %d but got %d\n", expectedArticleNum, newArticle.ID)
 	}
 
 	// 後処理

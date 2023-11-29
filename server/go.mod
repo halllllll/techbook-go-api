@@ -7,4 +7,4 @@ require (
 	github.com/halllllll/techbook-go-api v0.0.0-20231127224928-1ccb6a49b553
 )
 
-require github.com/go-sql-driver/mysql v1.7.1 // indirect
+require github.com/go-sql-driver/mysql v1.7.1

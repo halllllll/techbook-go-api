@@ -7,11 +7,12 @@ import (
 
 	"github.com/halllllll/techbook-go-api/server/models"
 	"github.com/halllllll/techbook-go-api/server/repositories"
+	"github.com/halllllll/techbook-go-api/server/repositories/testdata"
 )
 
 func TestSelectArticleList(t *testing.T) {
 
-	expectedNum := 4
+	expectedNum := len(testdata.ArticleTestData)
 	got, err := repositories.SelectArticleList(testDB, 1)
 	if err != nil {
 		t.Fatal(err)
@@ -30,23 +31,11 @@ func TestSelectArticleDetail(t *testing.T) {
 	}{
 		{
 			testTitle: "subtest1",
-			expected: models.Article{
-				ID:       1,
-				Title:    "firstPoost",
-				Contents: "This is my first blog",
-				UserName: "saki",
-				NiceNum:  3,
-			},
+			expected:  testdata.ArticleTestData[0],
 		},
 		{
 			testTitle: "subtest2",
-			expected: models.Article{
-				ID:       2,
-				Title:    "2nd Post",
-				Contents: "Second Blog Post",
-				UserName: "saki",
-				NiceNum:  9,
-			},
+			expected:  testdata.ArticleTestData[1],
 		},
 	}
 
@@ -76,5 +65,38 @@ func TestSelectArticleDetail(t *testing.T) {
 			}
 		})
 	}
+
+}
+
+func TestInsertArticle(t *testing.T) {
+	article := models.Article{
+		Title:    "insertTest",
+		Contents: "testtest",
+		UserName: "sasaki",
+	}
+
+	expectedArticluNum := 10
+	newArticle, err := repositories.InsertArticle(testDB, article)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if newArticle.ID != expectedArticluNum {
+		t.Errorf("new article id is expected %d but got %d\n", expectedArticluNum, newArticle.ID)
+	}
+
+	// 後処理
+	t.Cleanup(func() {
+		const sqlStr = `
+			DELETE FROM articles
+			WHERE title = ? AND contents = ? AND username = ?;
+
+		`
+
+		testDB.Exec(sqlStr, article.Title, article.Contents, article.UserName)
+	})
+}
+
+func TestUpdateNiceNum(t *testing.T) {
 
 }

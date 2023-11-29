@@ -14,7 +14,7 @@ const (
 func InsertArticle(db *sql.DB, article models.Article) (models.Article, error) {
 	// sql文の中でniceとcreated_atの値を決めている
 	const sqlStr = `
-		INESRT INTO articles (title, contents, username, nice, created_at) 
+		INSERT INTO articles (title, contents, username, nice, created_at) 
 		VALUES(?, ?, ?, 0, now());
 	`
 	var newArticle models.Article

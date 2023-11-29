@@ -11,6 +11,30 @@ import (
 	"github.com/halllllll/techbook-go-api/server/repositories"
 )
 
+func TestSelectArticleList(t *testing.T) {
+	dbUser := "docker"
+	dbPassword := "docker"
+	dbDatabase := "sampledb"
+	dbConn := fmt.Sprintf("%s:%s@tcp(127.0.0.1:3306)/%s?parseTime=true", dbUser, dbPassword, dbDatabase)
+
+	db, err := sql.Open("mysql", dbConn)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer db.Close()
+
+	expectedNum := 4
+	got, err := repositories.SelectArticleList(db, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if num := len(got); num != expectedNum {
+		t.Errorf("want %d but got %d articles\n", expectedNum, num)
+	}
+}
+
 func TestSelectArticleDetail(t *testing.T) {
 	dbUser := "docker"
 	dbPassword := "docker"
@@ -45,7 +69,7 @@ func TestSelectArticleDetail(t *testing.T) {
 				Title:    "2nd Post",
 				Contents: "Second Blog Post",
 				UserName: "saki",
-				NiceNum:  1,
+				NiceNum:  9,
 			},
 		},
 	}

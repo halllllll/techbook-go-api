@@ -48,17 +48,17 @@ cmd := exec.Command("docker", "exec", "-i", "db-for-go", "mysql", "-udocker", "-
 ということでChatGPTに聞いたら、`cmd.Stdin`を使って標準入力でファイルを読み込ませろとのこと。
 
 ```golang
-	// cmd := exec.Command("mysql", "-h", "127.0.0.1", "-u", "docker", "sampledb", "--password=docker", "-e", "source ./testdata/setupDB.sql") ローカルのmysql経由で実行（本書通り）
+// cmd := exec.Command("mysql", "-h", "127.0.0.1", "-u", "docker", "sampledb", "--password=docker", "-e", "source ./testdata/setupDB.sql") ローカルのmysql経由で実行（本書通り）
 
-	// 以下,自分の環境用に改変
-	// dockerのmysqlコンテナ経由で実行(リダイレクトはシェルの機能でありexec.Commandでは使えない)
-	setupSql, err := os.Open("./testdata/setupDB.sql")
-	if err != nil {
-		return err
-	}
-	cmd := exec.Command("docker", "exec", "-i", "db-for-go", "mysql", "-udocker", "-pdocker", "sampledb")
-	// リダイレクト
-	cmd.Stdin = setupSql
+// 以下,自分の環境用に改変
+// dockerのmysqlコンテナ経由で実行(リダイレクトはシェルの機能でありexec.Commandでは使えない)
+setupSql, err := os.Open("./testdata/setupDB.sql")
+if err != nil {
+    return err
+}
+cmd := exec.Command("docker", "exec", "-i", "db-for-go", "mysql", "-udocker", "-pdocker", "sampledb")
+// リダイレクト
+cmd.Stdin = setupSql
 
-	err = cmd.Run()
+err = cmd.Run()
 ```

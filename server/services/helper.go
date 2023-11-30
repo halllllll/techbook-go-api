@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 // ここでもDBリポジトリと同じようにsql.DB定義
@@ -17,6 +19,7 @@ var (
 
 // closeは呼び出し側でやる
 func connectDB() (*sql.DB, error) {
+	fmt.Printf("dbconn: %s\n", dbConn)
 	db, err := sql.Open("mysql", dbConn)
 	if err != nil {
 		return nil, err

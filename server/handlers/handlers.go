@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -28,6 +29,7 @@ func PostArticleHandler(w http.ResponseWriter, req *http.Request) {
 	article, err := services.PostAritcleService(reqArticle)
 	if err != nil {
 		http.Error(w, "fail internal exec\n", http.StatusInternalServerError)
+		return
 	}
 
 	json.NewEncoder(w).Encode(article)
@@ -54,7 +56,9 @@ func ArticleListHandler(w http.ResponseWriter, req *http.Request) {
 	// articleList := []models.Article{models.Article1, models.Article2}
 	articleList, err := services.GetAritcleListService(page)
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, "fail internal exec\n", http.StatusInternalServerError)
+		return
 	}
 
 	json.NewEncoder(w).Encode(articleList)
@@ -91,6 +95,7 @@ func PostNiceHandler(w http.ResponseWriter, req *http.Request) {
 	article, err := services.PostNiceService(reqArticle)
 	if err != nil {
 		http.Error(w, "fail internal exec\n", http.StatusInternalServerError)
+		return
 	}
 
 	json.NewEncoder(w).Encode(article)
@@ -105,6 +110,7 @@ func PostCommentHandler(w http.ResponseWriter, req *http.Request) {
 	comment, err := services.PostCommentService(reqComment)
 	if err != nil {
 		http.Error(w, "fail internal exec\n", http.StatusInternalServerError)
+		return
 	}
 
 	if err := json.NewEncoder(w).Encode(comment); err != nil {

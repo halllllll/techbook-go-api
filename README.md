@@ -3,6 +3,16 @@
 # dif
 
 ## Env - without MySQL in local
+
+### asdf
+`asdf`を使っている。そのせいか、`go.mod`および`go.sum`の記述によってvscode上でエラーが発生することがある
+
+```
+Command 'gopls.go_get_package' failed: Error: err: exit status 1: stderr: go: finding module for package　<ローカルのパッケージ>
+```
+`gopls`ノエラーだが、どうやら`asdf`のgolangの`pkg`にインストールされたパッケージを見にいったりしている？
+こういう場合、`go.mod`と`go.sum`のそれっぽいパッケージの部分を削除し、コードでimportしてるそれっぽいパッケージの部分も削除。vscodeのGolang拡張機能が入っていれば、そのまま保存すれば現在参照できる形で勝手に修正され、エラーは消えた。
+
 ### (p120~)3-1. 前準備 〜DB セットアップ
 
 ローカルに`mysql`がない用のメモ。

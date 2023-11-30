@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/halllllll/techbook-go-api/handlers"
+	"github.com/halllllll/techbook-go-api/server/handlers"
 )
 
 func main() {

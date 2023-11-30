@@ -43,7 +43,6 @@ func SelectCommentList(db *sql.DB, articleID int) ([]models.Comment, error) {
 	defer rows.Close()
 	for rows.Next() {
 		var comment models.Comment
-		// 忘れてた
 		var createdTime sql.NullTime
 		// エラーが起きても無視？
 		// if err := rows.Scan(&comment); err != nil {

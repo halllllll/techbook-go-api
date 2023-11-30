@@ -1,6 +1,6 @@
 package testdata
 
-import "github.com/halllllll/techbook-go-api/db/models"
+import "github.com/halllllll/techbook-go-api/server/models"
 
 var ArticleTestData = []models.Article{
 	models.Article{

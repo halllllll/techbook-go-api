@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/halllllll/techbook-go-api/db/models"
+	"github.com/halllllll/techbook-go-api/server/models"
 	"github.com/halllllll/techbook-go-api/server/repositories"
 )
 

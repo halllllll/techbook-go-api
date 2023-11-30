@@ -7,12 +7,12 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/halllllll/techbook-go-api/db/models"
+	"github.com/halllllll/techbook-go-api/server/models"
 	"github.com/halllllll/techbook-go-api/server/services"
 )
 
 func HelloHandler(w http.ResponseWriter, req *http.Request) {
-	io.WriteString(w, "Hello, world!\n")
+	io.WriteString(w, "Hello, world!\nwhat's up????")
 
 }
 

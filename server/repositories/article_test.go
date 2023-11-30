@@ -5,7 +5,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-	"github.com/halllllll/techbook-go-api/db/models"
+	"github.com/halllllll/techbook-go-api/server/models"
 	"github.com/halllllll/techbook-go-api/server/repositories"
 	"github.com/halllllll/techbook-go-api/server/repositories/testdata"
 )

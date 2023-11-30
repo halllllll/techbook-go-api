@@ -3,7 +3,7 @@ package repositories
 import (
 	"database/sql"
 
-	"github.com/halllllll/techbook-go-api/db/models"
+	"github.com/halllllll/techbook-go-api/server/models"
 )
 
 func InsertComent(db *sql.DB, comment models.Comment) (models.Comment, error) {

@@ -3,13 +3,15 @@ package services
 import (
 	"database/sql"
 	"fmt"
+	"os"
 )
 
 // ここでもDBリポジトリと同じようにsql.DB定義
+// GetEnvによる読み込み(go run main.go のオプションで流し込む予定)
 var (
-	dbUser     = "docker"
-	dbPassword = "docker"
-	dbDatabase = "sampledb"
+	dbUser     = os.Getenv("DB_USER")
+	dbPassword = os.Getenv("DB_PASSWORD")
+	dbDatabase = os.Getenv("DB_NAME")
 	dbConn     = fmt.Sprintf("%s:%s@tcp(127.0.0.1:3306)/%s?parseTime=true", dbUser, dbPassword, dbDatabase)
 )
 

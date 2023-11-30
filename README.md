@@ -31,6 +31,11 @@ docker exec -it db-for-go /bin/sh
 mysql -u docker sampledb -p
 ```
 
+* `/usr/bin/mysql: /usr/bin/mysql: cannot execute binary file`となる場合は以下を試す
+```
+docker exec -it db-for-go  mysql -u docker -p
+```
+
 ### (p218~)4-5. repositoriesパッケージのテストを完成させよう
 **p224**の`exec.Command`について、環境の違いで改変。本書の環境だと`mysql`がローカルにある前提なので、
 

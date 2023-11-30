@@ -3,7 +3,7 @@ package repositories
 import (
 	"database/sql"
 
-	"github.com/halllllll/techbook-go-api/server/models"
+	"github.com/halllllll/techbook-go-api/db/models"
 )
 
 const (

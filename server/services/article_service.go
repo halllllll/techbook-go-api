@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/halllllll/techbook-go-api/server/models"
+	"github.com/halllllll/techbook-go-api/db/models"
 	"github.com/halllllll/techbook-go-api/server/repositories"
 )
 
@@ -32,4 +32,67 @@ func GetArticleService(articleID int) (models.Article, error) {
 
 	return article, nil
 
+}
+
+func PostAritcleService(article models.Article) (models.Article, error) {
+	// sql.DBを手に入れて、それ経由でrepositoryを操作
+	db, err := connectDB()
+	if err != nil {
+		return models.Article{}, err
+	}
+	// 呼び出し側でclose
+	defer db.Close()
+
+	newArticle, err := repositories.InsertArticle(db, article)
+	if err != nil {
+		return models.Article{}, err
+	}
+
+	return newArticle, nil
+}
+
+func GetAritcleListService(page int) ([]models.Article, error) {
+	// sql.DBを手に入れて、それ経由でrepositoryを操作
+	db, err := connectDB()
+	if err != nil {
+		return []models.Article{}, err
+	}
+	// 呼び出し側でclose
+	defer db.Close()
+
+	articleList, err := repositories.SelectArticleList(db, page)
+
+	if err != nil {
+		return []models.Article{}, err
+	}
+
+	return articleList, nil
+}
+
+// 戻り値はarticle
+func PostNiceService(article models.Article) (models.Article, error) {
+	// sql.DBを手に入れて、それ経由でrepositoryを操作
+	db, err := connectDB()
+	if err != nil {
+		return models.Article{}, err
+	}
+	// 呼び出し側でclose
+	defer db.Close()
+
+	err = repositories.UpdateNiceNum(db, article.ID)
+	if err != nil {
+		return models.Article{}, err
+	}
+
+	// 戻り値はarticle
+	// でもDBから取得するんじゃなくてここでプロパティ操作してる...
+	// commentListはなぜか指定なし
+	return models.Article{
+		ID:        article.ID,
+		Title:     article.Title,
+		Contents:  article.Contents,
+		UserName:  article.UserName,
+		NiceNum:   article.NiceNum + 1,
+		CreatedAt: article.CreatedAt,
+	}, nil
 }

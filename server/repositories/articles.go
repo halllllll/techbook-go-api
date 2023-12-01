@@ -57,7 +57,7 @@ func SelectArticleDetail(db *sql.DB, articleID int) (models.Article, error) {
 	var article models.Article
 	var createdTime sql.NullTime
 	const sqlStr = `
-		SELECT * FROM articles WHERE article_id = ?;
+	SELECT * FROM articles WHERE article_id = ?;
 	`
 	row := db.QueryRow(sqlStr, articleID)
 	// 確認必要

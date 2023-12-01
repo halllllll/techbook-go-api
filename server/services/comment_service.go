@@ -5,16 +5,9 @@ import (
 	"github.com/halllllll/techbook-go-api/server/repositories"
 )
 
-func PostCommentService(comment models.Comment) (models.Comment, error) {
-	// sql.DBを手に入れて、それ経由でrepositoryを操作
-	db, err := connectDB()
-	if err != nil {
-		return models.Comment{}, err
-	}
-	// 呼び出し側でclose
-	defer db.Close()
+func (s *MyAppService) PostCommentService(comment models.Comment) (models.Comment, error) {
 
-	newComment, err := repositories.InsertComent(db, comment)
+	newComment, err := repositories.InsertComent(s.db, comment)
 	if err != nil {
 		return models.Comment{}, err
 	}

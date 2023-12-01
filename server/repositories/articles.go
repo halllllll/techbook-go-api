@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/halllllll/techbook-go-api/server/models"
 )
@@ -41,7 +40,6 @@ func SelectArticleList(db *sql.DB, page int) ([]models.Article, error) {
 
 	rows, err := db.Query(sqlStr, articleNumPerPage, (page-1)*articleNumPerPage)
 	if err != nil {
-		fmt.Println("これ実行時に環境変数を渡すのが怪しいし別の方法で読み取ったほうがよさそう")
 		return nil, err
 	}
 	defer rows.Close()

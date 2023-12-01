@@ -6,7 +6,16 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/halllllll/techbook-go-api/server/handlers"
+	"github.com/joho/godotenv"
 )
+
+func init() {
+	// 本書で書かれていた「実行時に環境変数をオプションで渡す」が動かなかったのでgodotenvで読み込むことにした
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 
 func main() {
 

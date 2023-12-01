@@ -1,8 +1,6 @@
 package services
 
 import (
-	"fmt"
-
 	"github.com/halllllll/techbook-go-api/server/models"
 	"github.com/halllllll/techbook-go-api/server/repositories"
 )
@@ -62,7 +60,6 @@ func GetAritcleListService(page int) ([]models.Article, error) {
 	// 呼び出し側でclose
 	defer db.Close()
 
-	fmt.Println("よいしょ〜")
 	articleList, err := repositories.SelectArticleList(db, page)
 
 	if err != nil {

@@ -13,8 +13,7 @@ func InsertComent(db *sql.DB, comment models.Comment) (models.Comment, error) {
 		INSERT INTO comments (article_id, message, created_at) VALUES
 		(?, ?, now());
 	`
-
-	newComment.ArticleID, newComment.Message = comment.CommentID, comment.Message
+	newComment.ArticleID, newComment.Message = comment.ArticleID, comment.Message
 
 	result, err := db.Exec(sqlStr, newComment.ArticleID, newComment.Message)
 	if err != nil {

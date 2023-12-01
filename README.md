@@ -1,21 +1,47 @@
 [APIを作りながら進むGo中級者への道](https://techbookfest.org/product/jXDAEU1dR53kbZkgtDm9zx)を写経するリポジトリ
 
 # dif
+内容差分
 
-## Env - without MySQL in local
-
-### asdf
+## asdf
 `asdf`を使っている。そのせいか、`go.mod`および`go.sum`の記述によってvscode上でエラーが発生することがある
 
 ```
 Command 'gopls.go_get_package' failed: Error: err: exit status 1: stderr: go: finding module for package　<ローカルのパッケージ>
 ```
-`gopls`ノエラーだが、どうやら`asdf`のgolangの`pkg`にインストールされたパッケージを見にいったりしている？
+`gopls`のエラーだが、どうやら`asdf`のgolangの`pkg`にインストールされたパッケージを見にいったりしている？
 こういう場合、`go.mod`と`go.sum`のそれっぽいパッケージの部分を削除し、コードでimportしてるそれっぽいパッケージの部分も削除。vscodeのGolang拡張機能が入っていれば、そのまま保存すれば現在参照できる形で勝手に修正され、エラーは消えた。
 
-### (p120~)3-1. 前準備 〜DB セットアップ
+## 環境変数
+本書では`go run`時にDBのパスワードなどをオプションで渡し、コードで`os.Getenv`で読み取るのだが、自分の環境ではうまくいかず。環境変数としてオプションを渡す方法は情報がなく不明。
 
-ローカルに`mysql`がない用のメモ。
+これは`joho/godotenv`を使うことにした
+```golang
+func init() {
+	// 本書で書かれていた「実行時に環境変数をオプションで渡す」が動かなかったのでgodotenvで読み込むことにした
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+// var (
+// 	dbUser     = os.Getenv("DB_USER")
+// 	dbPassword = os.Getenv("DB_PASSWORD")
+// 	dbDatabase = os.Getenv("DB_NAME")
+// 	dbConn     = fmt.Sprintf("%s:%s@tcp(127.0.0.1:3306)/%s?parseTime=true", dbUser, dbPassword, dbDatabase)
+// )
+
+func main() {
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbDatabase := os.Getenv("DB_NAME")
+	dbConn := fmt.Sprintf("%s:%s@tcp(127.0.0.1:3306)/%s?parseTime=true", dbUser, dbPassword, dbDatabase)
+```
+
+## (p120~)3-1. 前準備 〜DB セットアップ
+
+書籍内ではMySQLのDockerコンテナをローカルにある`mysql`コマンド経由で使っている。自分の環境ではローカルにMySQLがないので、コンテナのシェルに入って直接操作している。
 
 ```docker-compose.yaml
 services:
@@ -46,7 +72,7 @@ mysql -u docker sampledb -p
 docker exec -it db-for-go  mysql -u docker -p
 ```
 
-### (p218~)4-5. repositoriesパッケージのテストを完成させよう
+## (p218~)4-5. repositoriesパッケージのテストを完成させよう
 **p224**の`exec.Command`について、環境の違いで改変。本書の環境だと`mysql`がローカルにある前提なので、
 
 ```golang

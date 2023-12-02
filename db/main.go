@@ -70,13 +70,16 @@ func main() {
 		SET nice = ?
 		WHERE article_id = ?
 	`
-	_, err = tx.Exec(sqlUpdateNice, nicenum+1, article_id)
+	result, err := tx.Exec(sqlUpdateNice, nicenum+1, article_id)
 	if err != nil {
 		// ロールバックを忘れずに
 		fmt.Println(err)
 		tx.Rollback()
 		return
 	}
+
+	lid, _ := result.LastInsertId()
+	fmt.Printf("last insertid: %d\n", lid)
 
 	// コミットを忘れずに
 	tx.Commit()

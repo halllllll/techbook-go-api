@@ -1,6 +1,8 @@
 package services
 
 import (
+	"fmt"
+
 	"github.com/halllllll/techbook-go-api/server/models"
 	"github.com/halllllll/techbook-go-api/server/repositories"
 )
@@ -10,6 +12,7 @@ func (s *MyAppService) GetArticleService(articleID int) (models.Article, error) 
 	// 1. 記事を取得
 	article, err := repositories.SelectArticleDetail(s.db, articleID)
 	if err != nil {
+		fmt.Println(err)
 		return models.Article{}, err
 	}
 

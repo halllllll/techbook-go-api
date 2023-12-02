@@ -3,14 +3,29 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"log"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 )
 
+func init() {
+	if err := godotenv.Load(".env"); err != nil {
+		log.Fatal(err)
+	}
+}
+
 func main() {
-	dbUser := "docker"
-	dbPassword := "docker"
-	dbDatabase := "sampledb"
+	var (
+		DB_USER     = os.Getenv("USERNAME")
+		DB_PASSWORD = os.Getenv("USERPASS")
+		DB_NAME     = os.Getenv("DATABASE")
+	)
+
+	dbUser := DB_USER
+	dbPassword := DB_PASSWORD
+	dbDatabase := DB_NAME
 	dbConn := fmt.Sprintf("%s:%s@tcp(127.0.0.1:3306)/%s?parseTime=true", dbUser, dbPassword, dbDatabase)
 
 	db, err := sql.Open("mysql", dbConn)

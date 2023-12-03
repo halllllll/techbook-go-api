@@ -34,8 +34,6 @@ func main() {
 		log.Println("fail to connect DB")
 		return
 	}
-	// ser := services.NewMyAppService(db)
-	// con := controllers.NewMyAppController(ser)
 	r := api.NewRouter(db)
 
 	log.Println("server start at prot 8080")

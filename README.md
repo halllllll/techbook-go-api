@@ -12,6 +12,22 @@ Command 'gopls.go_get_package' failed: Error: err: exit status 1: stderr: go: fi
 `gopls`のエラーだが、どうやら`asdf`のgolangの`pkg`にインストールされたパッケージを見にいったりしている？
 こういう場合、`go.mod`と`go.sum`のそれっぽいパッケージの部分を削除し、コードでimportしてるそれっぽいパッケージの部分も削除。vscodeのGolang拡張機能が入っていれば、そのまま保存すれば現在参照できる形で勝手に修正され、エラーは消えた。
 
+## air
+特に最初はちょこちょこハンドラやリクエストの扱いなどを変更 -> プロセスを停止させたあと `go run main.go`で再度起動し別ターミナルでcurlで確認、という工程が多い。`air`でホットリロードすることにした
+
+```
+go install github.com/cosmtrek/air@latest
+air
+
+  __    _   ___  
+ / /\  | | | |_) 
+/_/--\ |_| |_| \_ v1.49.0, built with Go go1.21.4
+```
+
+* これにより`go run main.go`時にオプションを渡すなどができなくなる
+
+本書だとよく「最初のAPI用のコードだけ書いて、あとは実戦演習」のように進む。そのとき、全部のAPIを書かずとも、ひとつひとつ完成したところから試せるのがよい（ただしhandler-serivice-repositoryが揃ったp241以降だが）
+
 ## 環境変数
 本書では`go run`時にDBのパスワードなどをオプションで渡し、コードで`os.Getenv`で読み取るのだが、自分の環境ではうまくいかず。環境変数としてオプションを渡す方法は情報がなく不明。
 

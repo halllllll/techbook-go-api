@@ -6,16 +6,16 @@ import (
 	"net/http"
 	"strconv"
 
+	"gihtub.com/halllllll/techbook-go-api/server/controllers/services"
 	"gihtub.com/halllllll/techbook-go-api/server/models"
-	"gihtub.com/halllllll/techbook-go-api/server/services"
 	"github.com/gorilla/mux"
 )
 
 type MyAppController struct {
-	service *services.MyAppService
+	service services.MyAppServicer
 }
 
-func NewMyAppController(s *services.MyAppService) *MyAppController {
+func NewMyAppController(s services.MyAppServicer) *MyAppController {
 	return &MyAppController{service: s}
 }
 
@@ -30,7 +30,7 @@ func (c *MyAppController) PostArticleHandler(w http.ResponseWriter, req *http.Re
 		return
 	}
 
-	article, err := c.service.PostAricleService(reqArticle)
+	article, err := c.service.PostArticleService(reqArticle)
 	if err != nil {
 		http.Error(w, "fail to exec on PostArtice\n", http.StatusInternalServerError)
 		return
@@ -53,7 +53,7 @@ func (c *MyAppController) ArticleListHandler(w http.ResponseWriter, req *http.Re
 		page = 1
 	}
 
-	artilceList, err := c.service.GetAriticleListService(page)
+	artilceList, err := c.service.GetArticleListService(page)
 	if err != nil {
 		http.Error(w, "fail to exec on GetArticleList", http.StatusInternalServerError)
 		return
@@ -82,7 +82,7 @@ func (c *MyAppController) PostNiceHandler(w http.ResponseWriter, req *http.Reque
 		http.Error(w, "fail to decode json\n", http.StatusBadRequest)
 	}
 
-	article, err := c.service.PostNiceSerive(reqArticle)
+	article, err := c.service.PostNiceService(reqArticle)
 	if err != nil {
 		http.Error(w, "fail to exec on PostNice", http.StatusInternalServerError)
 		return

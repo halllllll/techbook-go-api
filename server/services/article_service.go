@@ -41,7 +41,7 @@ func (s *MyAppService) GetAriticleListService(page int) ([]models.Article, error
 	return articleList, nil
 }
 
-func (s *MyAppService) PostNiceSerive(article models.Article) (models.Article, error) {
+func (s *MyAppService) PostNiceSerivece(article models.Article) (models.Article, error) {
 
 	// 奇妙奇天烈だが、あとで本書でリファクタリングされるかもしれない実装
 	// (ここで+1をハードコーディングしている)

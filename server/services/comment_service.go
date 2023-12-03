@@ -5,15 +5,10 @@ import (
 	"gihtub.com/halllllll/techbook-go-api/server/repositories"
 )
 
-func PostCommentService(comment models.Comment) (models.Comment, error) {
-	db, err := connectDB()
-	if err != nil {
-		return models.Comment{}, err
-	}
-	defer db.Close()
+func (s *MyAppService) PostCommentService(comment models.Comment) (models.Comment, error) {
 
 	// これこのままreturnしても中身同じだと思うけどあとで本書でリファクタリングされる可能性があるからとりあえず愚直にそのまま写経
-	newComment, err := repositories.InsertComment(db, comment)
+	newComment, err := repositories.InsertComment(s.db, comment)
 	if err != nil {
 		return models.Comment{}, err
 	}

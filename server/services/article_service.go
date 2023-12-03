@@ -5,15 +5,9 @@ import (
 	"gihtub.com/halllllll/techbook-go-api/server/repositories"
 )
 
-func PostAricleService(article models.Article) (models.Article, error) {
-	db, err := connectDB()
-	if err != nil {
-		return models.Article{}, err
-	}
-	defer db.Close()
-
+func (s *MyAppService) PostAricleService(article models.Article) (models.Article, error) {
 	// これそのままreturnしてもいいとは思うがあとで本書でリファクタリングするかもしれないのでとりあえず
-	newArticle, err := repositories.InsertArticle(db, article)
+	newArticle, err := repositories.InsertArticle(s.db, article)
 	if err != nil {
 		return models.Article{}, err
 	}
@@ -21,20 +15,13 @@ func PostAricleService(article models.Article) (models.Article, error) {
 	return newArticle, nil
 }
 
-func GetArticleService(articleID int) (models.Article, error) {
-
-	db, err := connectDB()
-	if err != nil {
-		return models.Article{}, err
-	}
-	defer db.Close()
-
-	article, err := repositories.SelectArticleDetail(db, articleID)
+func (s *MyAppService) GetArticleService(articleID int) (models.Article, error) {
+	article, err := repositories.SelectArticleDetail(s.db, articleID)
 	if err != nil {
 		return models.Article{}, err
 	}
 
-	commentList, err := repositories.SelectCommentList(db, articleID)
+	commentList, err := repositories.SelectCommentList(s.db, articleID)
 	if err != nil {
 		return models.Article{}, err
 	}
@@ -44,14 +31,9 @@ func GetArticleService(articleID int) (models.Article, error) {
 	return article, nil
 }
 
-func GetAriticleListService(page int) ([]models.Article, error) {
-	db, err := connectDB()
-	if err != nil {
-		return []models.Article{}, err
-	}
-	defer db.Close()
+func (s *MyAppService) GetAriticleListService(page int) ([]models.Article, error) {
 
-	articleList, err := repositories.SelectArticleList(db, page)
+	articleList, err := repositories.SelectArticleList(s.db, page)
 	if err != nil {
 		return []models.Article{}, err
 	}
@@ -59,16 +41,11 @@ func GetAriticleListService(page int) ([]models.Article, error) {
 	return articleList, nil
 }
 
-func PostNiceSerive(article models.Article) (models.Article, error) {
-	db, err := connectDB()
-	if err != nil {
-		return models.Article{}, err
-	}
-	defer db.Close()
+func (s *MyAppService) PostNiceSerive(article models.Article) (models.Article, error) {
 
 	// 奇妙奇天烈だが、あとで本書でリファクタリングされるかもしれない実装
 	// (ここで+1をハードコーディングしている)
-	if err := repositories.UpdateNiceNum(db, article.ID); err != nil {
+	if err := repositories.UpdateNiceNum(s.db, article.ID); err != nil {
 		return models.Article{}, err
 	}
 

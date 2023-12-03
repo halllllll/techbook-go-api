@@ -7,9 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	"gihtub.com/halllllll/techbook-go-api/server/controllers"
-	"gihtub.com/halllllll/techbook-go-api/server/routers"
-	"gihtub.com/halllllll/techbook-go-api/server/services"
+	"gihtub.com/halllllll/techbook-go-api/server/api"
 	"github.com/joho/godotenv"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -36,9 +34,9 @@ func main() {
 		log.Println("fail to connect DB")
 		return
 	}
-	ser := services.NewMyAppService(db)
-	con := controllers.NewMyAppController(ser)
-	r := routers.NewRouter(con)
+	// ser := services.NewMyAppService(db)
+	// con := controllers.NewMyAppController(ser)
+	r := api.NewRouter(db)
 
 	log.Println("server start at prot 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))

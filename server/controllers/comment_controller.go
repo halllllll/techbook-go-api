@@ -22,18 +22,21 @@ func (c *CommentController) PostCommentHandler(w http.ResponseWriter, req *http.
 	if err := json.NewDecoder(req.Body).Decode(&reqComment); err != nil {
 		// どこで使う？
 		err = apperrors.ReqBodyDecodeFailed.Wrap(err, "bad request body")
-		http.Error(w, "fail to decode json\n", http.StatusBadRequest)
-		return
+		// http.Error(w, "fail to decode json\n", http.StatusBadRequest)
+		apperrors.ErrorHandler(w, req, err)
+		// return
 	}
 	comment, err := c.service.PostCommentService(reqComment)
 	if err != nil {
-		http.Error(w, "fail to exec on PostComment", http.StatusInternalServerError)
-		return
+		// http.Error(w, "fail to exec on PostComment", http.StatusInternalServerError)
+		// return
+		apperrors.ErrorHandler(w, req, err)
 	}
 	jsonData, err := json.Marshal(comment)
 	if err != nil {
-		http.Error(w, "fail to encode json\n", http.StatusInternalServerError)
-		return
+		// http.Error(w, "fail to encode json\n", http.StatusInternalServerError)
+		// return
+		apperrors.ErrorHandler(w, req, err)
 	}
 
 	w.Write(jsonData)

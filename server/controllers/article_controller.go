@@ -61,7 +61,6 @@ func (c *ArticleController) ArticleListHandler(w http.ResponseWriter, req *http.
 	} else {
 		page = 1
 	}
-
 	artilceList, err := c.service.GetArticleListService(page)
 	if err != nil {
 		// http.Error(w, "fail to exec on GetArticleList", http.StatusInternalServerError)

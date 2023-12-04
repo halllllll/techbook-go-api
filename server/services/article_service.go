@@ -9,7 +9,7 @@ import (
 	"gihtub.com/halllllll/techbook-go-api/server/repositories"
 )
 
-func (s *MyAppService) PostAricleService(article models.Article) (models.Article, error) {
+func (s *MyAppService) PostArticleService(article models.Article) (models.Article, error) {
 	// これそのままreturnしてもいいとは思うがあとで本書でリファクタリングするかもしれないのでとりあえず
 	// (追記：独自エラーのところで見事回収)
 	newArticle, err := repositories.InsertArticle(s.db, article)
@@ -42,8 +42,7 @@ func (s *MyAppService) GetArticleService(articleID int) (models.Article, error) 
 	return article, nil
 }
 
-func (s *MyAppService) GetAriticleListService(page int) ([]models.Article, error) {
-
+func (s *MyAppService) GetArticleListService(page int) ([]models.Article, error) {
 	articleList, err := repositories.SelectArticleList(s.db, page)
 	if err != nil {
 		err = apperrors.GetDataFailed.Wrap(err, "fail to get data")
@@ -57,7 +56,7 @@ func (s *MyAppService) GetAriticleListService(page int) ([]models.Article, error
 	return articleList, nil
 }
 
-func (s *MyAppService) PostNiceSerivece(article models.Article) (models.Article, error) {
+func (s *MyAppService) PostNiceService(article models.Article) (models.Article, error) {
 
 	// 奇妙奇天烈だが、あとで本書でリファクタリングされるかもしれない実装
 	// (ここで+1をハードコーディングしている)

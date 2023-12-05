@@ -86,9 +86,7 @@ func SelectArticleDetail(db *sql.DB, articleID int) (models.Article, error) {
 	var article models.Article
 	var createdTime sql.NullTime
 	tx, err := db.Begin()
-
 	if err != nil {
-		tx.Rollback()
 		return models.Article{}, err
 	}
 
@@ -97,7 +95,6 @@ func SelectArticleDetail(db *sql.DB, articleID int) (models.Article, error) {
 		tx.Rollback()
 		return models.Article{}, err
 	}
-
 	if err := row.Scan(&article.ID, &article.Title, &article.Contents, &article.UserName, &article.NiceNum, &createdTime); err != nil {
 		tx.Rollback()
 		return models.Article{}, err
@@ -106,7 +103,6 @@ func SelectArticleDetail(db *sql.DB, articleID int) (models.Article, error) {
 	if createdTime.Valid {
 		article.CreatedAt = createdTime.Time
 	}
-
 	if err := tx.Commit(); err != nil {
 		return models.Article{}, err
 	}

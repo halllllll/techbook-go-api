@@ -3,6 +3,7 @@ package services
 import (
 	"database/sql"
 	"errors"
+	"sync"
 
 	"gihtub.com/halllllll/techbook-go-api/server/apperrors"
 	"gihtub.com/halllllll/techbook-go-api/server/models"
@@ -22,18 +23,46 @@ func (s *MyAppService) PostArticleService(article models.Article) (models.Articl
 }
 
 func (s *MyAppService) GetArticleService(articleID int) (models.Article, error) {
-	article, err := repositories.SelectArticleDetail(s.db, articleID)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			err = apperrors.NAData.Wrap(err, "no data")
+	// goroutineで分けてそれぞれ並行処理をした結果の戻り値として
+	var article models.Article
+	var commentList []models.Comment
+	var articleGetError, commentGetError error
+
+	// race condition対策　ロック・アンロック
+	var aMux sync.Mutex
+	var cMux sync.Mutex
+
+	var wg sync.WaitGroup
+	wg.Add(2)
+
+	// (go文は戻り値がある関数には使えないので無名即時関数)
+	go func(db *sql.DB, articleID int) {
+		defer wg.Done()
+		aMux.Lock()
+		article, articleGetError = repositories.SelectArticleDetail(db, articleID)
+		aMux.Unlock()
+	}(s.db, articleID)
+
+	go func(db *sql.DB, articleID int) {
+		defer wg.Done()
+		cMux.Lock()
+		commentList, commentGetError = repositories.SelectCommentList(db, articleID)
+		cMux.Unlock()
+	}(s.db, articleID)
+
+	wg.Wait()
+
+	if articleGetError != nil {
+		if errors.Is(articleGetError, sql.ErrNoRows) {
+			err := apperrors.NAData.Wrap(articleGetError, "no data")
 			return models.Article{}, err
 		}
-		err = apperrors.GetDataFailed.Wrap(err, "fail to get data")
+		err := apperrors.GetDataFailed.Wrap(articleGetError, "fail to get data")
 		return models.Article{}, err
 	}
 
-	commentList, err := repositories.SelectCommentList(s.db, articleID)
-	if err != nil {
+	if commentGetError != nil {
+		err := apperrors.GetDataFailed.Wrap(commentGetError, "fail to get data")
 		return models.Article{}, err
 	}
 

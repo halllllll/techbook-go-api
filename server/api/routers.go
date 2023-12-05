@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"net/http"
 
+	"gihtub.com/halllllll/techbook-go-api/server/api/middleware"
 	"gihtub.com/halllllll/techbook-go-api/server/controllers"
 	"gihtub.com/halllllll/techbook-go-api/server/services"
 	"github.com/gorilla/mux"
@@ -23,5 +24,6 @@ func NewRouter(db *sql.DB) *mux.Router {
 	r.HandleFunc("/article/nice", aCon.PostNiceHandler).Methods(http.MethodPost)
 	r.HandleFunc("/comment", cCon.PostCommentHandler).Methods(http.MethodPost)
 
+	r.Use(middleware.LoggingMiddleware)
 	return r
 }

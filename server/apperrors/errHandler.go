@@ -3,7 +3,10 @@ package apperrors
 import (
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
+
+	"gihtub.com/halllllll/techbook-go-api/server/api/middleware"
 )
 
 func ErrorHandler(w http.ResponseWriter, req *http.Request, err error) {
@@ -16,6 +19,9 @@ func ErrorHandler(w http.ResponseWriter, req *http.Request, err error) {
 			Err:     err,
 		}
 	}
+
+	traceID := middleware.GetTraceID(req.Context())
+	log.Printf("[%d] error: %s\n", traceID, appErr)
 
 	var statusCode int
 	switch appErr.ErrCode {

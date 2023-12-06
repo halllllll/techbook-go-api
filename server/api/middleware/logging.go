@@ -26,15 +26,19 @@ func NewResLoggingWriter(w http.ResponseWriter) *resLoggingWriter {
 
 func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// 直下じゃなくてここでtraceidを宣言する
+		traceID := newTraceID()
+		log.Printf("[%d]%s %s\n", traceID, r.RequestURI, r.Method)
 
-		log.Println(r.RequestURI, r.Method)
+		ctx := SetTraceID(r.Context(), traceID)
+		req := r.WithContext(ctx)
 
 		// middlewareの後処理にはhttp.ResponseWriter型の構造体を自作し、その中でresを使う
 		rlw := NewResLoggingWriter(w)
 
-		next.ServeHTTP(rlw, r)
+		next.ServeHTTP(rlw, req)
 
 		// 後処理
-		log.Println("res: ", rlw.code)
+		log.Printf("[%d] res: %d\n", traceID, rlw.code)
 	})
 }

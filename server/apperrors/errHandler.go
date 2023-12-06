@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"gihtub.com/halllllll/techbook-go-api/server/api/middleware"
+	"gihtub.com/halllllll/techbook-go-api/server/common"
 )
 
 func ErrorHandler(w http.ResponseWriter, req *http.Request, err error) {
@@ -20,7 +20,7 @@ func ErrorHandler(w http.ResponseWriter, req *http.Request, err error) {
 		}
 	}
 
-	traceID := middleware.GetTraceID(req.Context())
+	traceID := common.GetTraceID(req.Context())
 	log.Printf("[%d] error: %s\n", traceID, appErr)
 
 	var statusCode int

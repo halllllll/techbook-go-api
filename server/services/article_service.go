@@ -3,7 +3,6 @@ package services
 import (
 	"database/sql"
 	"errors"
-	"sync"
 
 	"gihtub.com/halllllll/techbook-go-api/server/apperrors"
 	"gihtub.com/halllllll/techbook-go-api/server/models"
@@ -23,34 +22,70 @@ func (s *MyAppService) PostArticleService(article models.Article) (models.Articl
 }
 
 func (s *MyAppService) GetArticleService(articleID int) (models.Article, error) {
-	// goroutineで分けてそれぞれ並行処理をした結果の戻り値として
 	var article models.Article
 	var commentList []models.Comment
 	var articleGetError, commentGetError error
 
-	// race condition対策　ロック・アンロック
-	var aMux sync.Mutex
-	var cMux sync.Mutex
+	// var aMux sync.Mutex
+	// var cMux sync.Mutex
 
-	var wg sync.WaitGroup
-	wg.Add(2)
+	// var wg sync.WaitGroup
+	// wg.Add(2)
 
-	// (go文は戻り値がある関数には使えないので無名即時関数)
-	go func(db *sql.DB, articleID int) {
-		defer wg.Done()
-		aMux.Lock()
-		article, articleGetError = repositories.SelectArticleDetail(db, articleID)
-		aMux.Unlock()
-	}(s.db, articleID)
+	// WaitGroupを使った並列処理をチャネルを使ったものに置き換える
+	type articleResult struct {
+		article models.Article
+		err     error
+	}
+	articleChan := make(chan articleResult)
+	defer close(articleChan)
 
-	go func(db *sql.DB, articleID int) {
-		defer wg.Done()
-		cMux.Lock()
-		commentList, commentGetError = repositories.SelectCommentList(db, articleID)
-		cMux.Unlock()
-	}(s.db, articleID)
+	// go func(db *sql.DB, articleID int) {
+	// 	// defer wg.Done()
+	// 	// aMux.Lock()
+	// 	article, articleGetError = repositories.SelectArticleDetail(db, articleID)
+	// 	// aMux.Unlock()
+	// }(s.db, articleID)
 
-	wg.Wait()
+	go func(ch chan<- articleResult, db *sql.DB, articleID int) {
+		article, err := repositories.SelectArticleDetail(db, articleID)
+		ch <- articleResult{article: article, err: err}
+	}(articleChan, s.db, articleID)
+
+	// WaitGroupを使った並列処理をチャネルを使ったものに置き換える
+	type commentResult struct {
+		commentList *[]models.Comment
+		err         error
+	}
+	commentChan := make(chan commentResult)
+	defer close(commentChan)
+
+	// go func(db *sql.DB, articleID int) {
+	// 	// defer wg.Done()
+	// 	// cMux.Lock()
+	// 	commentList, commentGetError = repositories.SelectCommentList(db, articleID)
+	// 	// cMux.Unlock()
+	// }(s.db, articleID)
+
+	go func(ch chan<- commentResult, db *sql.DB, articleID int) {
+		commentList, err := repositories.SelectCommentList(db, articleID)
+		ch <- commentResult{
+			commentList: &commentList, err: err,
+		}
+	}(commentChan, s.db, articleID)
+
+	// wg.Wait()
+	// WaitGroupではなくチャネルを使った並列処理に変える
+	// select文は上から順に評価されるわけではなく、待ち受けているcaseに値が入ったら実行される
+	// forで2回回しているので、チャネルからの受信を計2回受け付けている
+	for i := 0; i < 2; i++ {
+		select {
+		case ar := <-articleChan:
+			article, articleGetError = ar.article, ar.err
+		case cr := <-commentChan:
+			commentList, commentGetError = *cr.commentList, cr.err
+		}
+	}
 
 	if articleGetError != nil {
 		if errors.Is(articleGetError, sql.ErrNoRows) {

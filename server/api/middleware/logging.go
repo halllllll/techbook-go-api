@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"log"
 	"net/http"
 )
@@ -29,8 +30,9 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 		// 直下じゃなくてここでtraceidを宣言する
 		traceID := newTraceID()
 		log.Printf("[%d]%s %s\n", traceID, r.RequestURI, r.Method)
-
-		ctx := SetTraceID(r.Context(), traceID)
+		// ctx := SetTraceID(r.Context(), traceID)
+		ctx := r.Context()
+		ctx = context.WithValue(ctx, traceIDKey{}, traceID)
 		req := r.WithContext(ctx)
 
 		// middlewareの後処理にはhttp.ResponseWriter型の構造体を自作し、その中でresを使う
